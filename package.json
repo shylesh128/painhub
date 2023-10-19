@@ -1,0 +1,24 @@
+{
+  "name": "nextjs-with-express",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "NODE_ENV=development PORT=3001 nodemon server/index.js",
+    "build": "next build",
+    "start": "NODE_ENV=production node server/index.js",
+    "stage": "NODE_ENV=production PORT=4000 node server/index.js",
+    "prod:dev": "NODE_ENV=production PORT=4001 node server/index.js",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "axios": "^1.5.1",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "formidable": "^3.5.1",
+    "next": "13.5.6",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  }
+}
