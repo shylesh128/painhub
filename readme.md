@@ -48,6 +48,17 @@ This project combines Next.js, a React framework for frontend development, with 
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/shylesh128/nextjswithexpress.git
+   git clone https://github.com/shylesh128/Next.js-Express-MongoDB-Starter-Template.git
    cd <project-folder>
+
+   pnpm install
+   pnpm dev
    ```
+
+2. .env file
+
+```bash
+PASSWORD=<your_generated_password>
+DATABASE=mongodb+srv://username:<PASSWORD>@clustername.mo0ihyi.mongodb.net/?retryWrites=true&w=majority
+
+```
