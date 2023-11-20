@@ -8,6 +8,39 @@ This project combines Next.js, a React framework for frontend development, with 
 
   - `controllers/`: Controllers handle the application's logic and interact with models and views.
 
+  - `models/`: Models define the structure of data and handle database interactions. This project uses MongoDB with Mongoose for data storage.
+
+    - `userModel.js`: Example user model schema for MongoDB.
+
+    ```javascript
+    const mongoose = require("mongoose");
+
+    const userSchema = new mongoose.Schema({
+      name: {
+        type: String,
+        required: true,
+        trim: true,
+      },
+      email: {
+        type: String,
+        required: true,
+        unique: true,
+        trim: true,
+        lowercase: true,
+      },
+      createdAt: {
+        type: Date,
+        default: Date.now,
+      },
+    });
+
+    const User = mongoose.model("User", userSchema);
+
+    module.exports = User;
+    ```
+
+  - `routes/`: Routes define the API endpoints and their corresponding controllers.
+
 - `pages/`: This folder contains the frontend code. Next.js uses this folder to automatically create routes and render React components on the client side.
 
 ## Getting Started

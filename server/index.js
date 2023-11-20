@@ -1,5 +1,6 @@
 const express = require("express");
 const next = require("next");
+const mongoose = require("mongoose");
 
 require("dotenv").config();
 const PORT = process.env.PORT;
@@ -36,6 +37,19 @@ app
       if (err) throw err;
       console.log(`running on the port ${PORT}`);
     });
+
+    const DB = process.env.DATABASE.replace("<PASSWORD>", process.env.PASSWORD);
+    mongoose
+      .connect(DB, {
+        useNewUrlParser: true,
+        useUnifiedTopology: false,
+      })
+      .then(() => {
+        console.log("DB connection successful! ");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   })
   .catch((ex) => {
     console.error(ex.stack);
