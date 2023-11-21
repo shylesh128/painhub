@@ -1,25 +1,6 @@
 const catchAsync = require("../utils/catchAsync");
 const User = require("../models/userModel");
-
-const addUser = catchAsync(async (req, res, next) => {
-  const { name, email } = req.body;
-
-  if (!name || !email) {
-    return res.status(400).json({
-      status: "fail",
-      message: "Name and email are required fields.",
-    });
-  }
-
-  const newUser = await User.create({ name, email });
-
-  res.status(201).json({
-    status: "success",
-    data: {
-      user: newUser,
-    },
-  });
-});
+const appError = require("../utils/appError");
 
 const deleteUser = catchAsync(async (req, res, next) => {
   const userId = req.params.id;
@@ -98,6 +79,32 @@ const editUser = catchAsync(async (req, res, next) => {
   });
 });
 
+const addUser = catchAsync(async (req, res, next) => {
+  const { name, email, role } = req.body;
+
+  if (!name || !email) {
+    return res.status(400).json({
+      status: "fail",
+      message: "Name and email are required fields.",
+    });
+  }
+
+  // Set a default role if none is provided
+  const userRole = role || "User";
+
+  try {
+    const newUser = await User.create({ name, email, role: userRole });
+    res.status(201).json({
+      status: "success",
+      data: {
+        user: newUser,
+      },
+    });
+  } catch (e) {
+    next(new appError(e.message, 401));
+  }
+});
+
 const addUsers = catchAsync(async (req, res, next) => {
   const usersData = req.body;
 
@@ -111,6 +118,7 @@ const addUsers = catchAsync(async (req, res, next) => {
 
   // Validate each user in the array
   const invalidUsers = usersData.filter((user) => !user.name || !user.email);
+
   if (invalidUsers.length > 0) {
     return res.status(400).json({
       status: "fail",
@@ -118,15 +126,26 @@ const addUsers = catchAsync(async (req, res, next) => {
     });
   }
 
-  // Create many users
-  const newUsers = await User.insertMany(usersData);
+  // Set a default role if none is provided
+  const usersWithRole = usersData.map((user) => ({
+    ...user,
+    role: user.role || "User",
+  }));
 
-  res.status(201).json({
-    status: "success",
-    data: {
-      users: newUsers,
-    },
-  });
+  // Create many users
+
+  try {
+    const newUsers = await User.insertMany(usersWithRole);
+
+    res.status(201).json({
+      status: "success",
+      data: {
+        users: newUsers,
+      },
+    });
+  } catch (e) {
+    next(new appError(e.message, 401));
+  }
 });
 
 const deleteAllUsers = catchAsync(async (req, res, next) => {

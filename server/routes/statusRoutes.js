@@ -13,11 +13,11 @@ const {
 router.get("/api/status", statusController.getStatus);
 
 router.post("/api/addUser", addUser);
-router.delete("/api/deleteUser/:id", deleteUser);
+router.delete("/api/user/:id", deleteUser);
 router.get("/api/users", viewUser);
 router.put("/api/editUser/:id", editUser);
 
 router.post("/api/addUsers", addUsers);
-router.delete("/api/deleteAllUsers", deleteAllUsers);
+router.delete("/api/users", deleteAllUsers);
 
 module.exports = router;

@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 
+const validRoles = ["client", "developer", "manager", "admin", "user"];
+
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -12,6 +14,13 @@ const userSchema = new mongoose.Schema({
     unique: true,
     trim: true,
     lowercase: true,
+  },
+  role: {
+    type: String,
+    required: true,
+    trim: true,
+    lowercase: true,
+    enum: validRoles,
   },
   createdAt: {
     type: Date,
