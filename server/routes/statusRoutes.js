@@ -9,6 +9,12 @@ const {
   addUsers,
   deleteAllUsers,
 } = require("../controllers/userController");
+const { login, userByToken } = require("../controllers/loginController");
+const {
+  getAllFeedback,
+  createFeedback,
+} = require("../controllers/feedbackController");
+const { getAllTweets, createTweet } = require("../controllers/tweetController");
 
 router.get("/api/status", statusController.getStatus);
 
@@ -20,4 +26,13 @@ router.put("/api/editUser/:id", editUser);
 router.post("/api/addUsers", addUsers);
 router.delete("/api/users", deleteAllUsers);
 
+router.post("/api/login", login);
+
+router.get("/api/feedback", getAllFeedback);
+router.post("/api/feedback", createFeedback);
+
+router.get("/api/tweet", getAllTweets);
+router.post("/api/tweet", createTweet);
+
+router.post("/api/isLoggedIn", userByToken);
 module.exports = router;

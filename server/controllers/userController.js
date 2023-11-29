@@ -2,6 +2,35 @@ const catchAsync = require("../utils/catchAsync");
 const User = require("../models/userModel");
 const appError = require("../utils/appError");
 
+const jwt = require("jsonwebtoken");
+
+const secretKey =
+  "746d3de964867c223d8a97948f22987e66566d7b73e65f0b23221ac8174b986e";
+
+const login = catchAsync(async (req, res, next) => {
+  const email = req.body.email;
+
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    return res.status(400).json({
+      status: "fail",
+      message: "User not found.",
+    });
+  }
+
+  const token = jwt.sign({ userId: user._id }, secretKey, {
+    expiresIn: "9999999d",
+  });
+
+  res.status(200).json({
+    status: "success",
+    message: "User login successfully.",
+    token: token,
+    user: user,
+  });
+});
+
 const deleteUser = catchAsync(async (req, res, next) => {
   const userId = req.params.id;
 
@@ -80,7 +109,7 @@ const editUser = catchAsync(async (req, res, next) => {
 });
 
 const addUser = catchAsync(async (req, res, next) => {
-  const { name, email, role } = req.body;
+  const { name, email } = req.body;
 
   if (!name || !email) {
     return res.status(400).json({
@@ -89,11 +118,8 @@ const addUser = catchAsync(async (req, res, next) => {
     });
   }
 
-  // Set a default role if none is provided
-  const userRole = role || "User";
-
   try {
-    const newUser = await User.create({ name, email, role: userRole });
+    const newUser = await User.create({ name, email });
     res.status(201).json({
       status: "success",
       data: {
@@ -129,7 +155,6 @@ const addUsers = catchAsync(async (req, res, next) => {
   // Set a default role if none is provided
   const usersWithRole = usersData.map((user) => ({
     ...user,
-    role: user.role || "User",
   }));
 
   // Create many users
