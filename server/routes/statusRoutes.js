@@ -17,6 +17,8 @@ const {
 const { getAllTweets, createTweet } = require("../controllers/tweetController");
 const { pythoncodeComplier } = require("../controllers/pythonController");
 const { javacodeCompiler } = require("../controllers/JavaController");
+const { cCodeCompiler } = require("../controllers/cProgController");
+const { phpCodeExecutor } = require("../controllers/phpController");
 
 router.get("/api/status", statusController.getStatus);
 
@@ -39,4 +41,8 @@ router.post("/api/tweet", createTweet);
 router.post("/api/isLoggedIn", userByToken);
 
 router.post("/api/python", pythoncodeComplier);
+router.post("/api/java", javacodeCompiler);
+router.post("/api/c", cCodeCompiler);
+router.post("/api/php", phpCodeExecutor);
+
 module.exports = router;
