@@ -27,34 +27,44 @@ export default function Chat() {
   const [socket, setSocket] = useState(null);
   const [messages, setMessages] = useState([]);
   const [activeUsers, setActiveUsers] = useState([]);
+  const [connected, setConnected] = useState(false);
 
   useEffect(() => {
-    const newSocket = io("/api/chat", {
-      withCredentials: true,
-    });
-    setSocket(newSocket);
+    if (connected) {
+      const newSocket = io("/api/chat", {
+        withCredentials: true,
+      });
+      setSocket(newSocket);
 
-    newSocket.on("update users", (users) => {
-      setActiveUsers([]);
-      setActiveUsers(users);
-    });
+      newSocket.on("update users", (users) => {
+        setActiveUsers(users);
+      });
 
-    newSocket.on("chat message", (data) => {
-      const { userId, msg, timestamp } = data;
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        {
-          userId,
-          msg,
-          timestamp,
-        },
-      ]);
-    });
+      newSocket.on("chat message", (data) => {
+        const { userId, msg, timestamp } = data;
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          {
+            userId,
+            msg,
+            timestamp,
+          },
+        ]);
+      });
 
-    return () => {
-      newSocket.disconnect();
-    };
-  }, []);
+      return () => {
+        newSocket.disconnect();
+      };
+    }
+  }, [connected]);
+
+  const handleConnect = () => {
+    setConnected(true);
+  };
+
+  const handleDisconnect = () => {
+    setConnected(false);
+  };
 
   useEffect(() => {
     scrollToBottom();
@@ -88,68 +98,93 @@ export default function Chat() {
 
   return (
     <div>
-      <div id="main-content">
-        <div id="side-app">
-          <h2 style={headingStyle}>Active Users</h2>
-          <ul>
-            {activeUsers.map((user, index) => (
-              <li key={index} style={listItemStyle}>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "start",
-                    alignItems: "center",
-                    gap: "10px",
-                  }}
-                >
+      {!connected ? (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "80vh",
+          }}
+        >
+          <div>
+            <h1>Chat</h1>
+            <button onClick={handleConnect}>Connect</button>
+          </div>
+        </div>
+      ) : (
+        <div id="main-content">
+          <div id="side-app">
+            <h2 style={headingStyle}>Active Users</h2>
+            <ul>
+              {activeUsers.map((user, index) => (
+                <li key={index} style={listItemStyle}>
                   <div
                     style={{
-                      width: "10px",
-                      height: "10px",
-                      borderRadius: "50%",
-                      background: "#2ecc71",
+                      display: "flex",
+                      justifyContent: "start",
+                      alignItems: "center",
+                      gap: "10px",
                     }}
-                  ></div>
-                  <Typography>{user}</Typography>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div id="chat-section">
-          <ul id="messages" ref={messagesRef}>
-            {messages.map((message, index) => (
-              <li
-                key={index}
-                className={
-                  message.userId === user.name
-                    ? "currentUserMessage"
-                    : "otherUserMessage"
-                }
-              >
-                <div className="message-container">
-                  <div className="message-wrapper">
-                    <span className="username">{message.userId}</span>
-                    <span className="timeStamp">
-                      {formatTimestamp(message.timestamp)}
-                    </span>
+                  >
+                    <div
+                      style={{
+                        width: "10px",
+                        height: "10px",
+                        borderRadius: "50%",
+                        background: "#2ecc71",
+                      }}
+                    ></div>
+                    <Typography>{user}</Typography>
                   </div>
-                  <div className="message-bubble">{message.msg}</div>
-                </div>
-              </li>
-            ))}
-          </ul>
-          <form id="form" onSubmit={handleSubmit}>
-            <input
-              id="m"
-              autoComplete="off"
-              placeholder="Type your message..."
-              name="message"
-            />
-            <button type="submit">Send</button>
-          </form>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div id="chat-section">
+            <ul id="messages" ref={messagesRef}>
+              {messages.map((message, index) => (
+                <li
+                  key={index}
+                  className={
+                    message.userId === user.name
+                      ? "currentUserMessage"
+                      : "otherUserMessage"
+                  }
+                >
+                  <div className="message-container">
+                    <div className="message-wrapper">
+                      <span className="username">{message.userId}</span>
+                      <span className="timeStamp">
+                        {formatTimestamp(message.timestamp)}
+                      </span>
+                    </div>
+                    <div className="message-bubble">{message.msg}</div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+
+            <form id="form" onSubmit={handleSubmit}>
+              <input
+                id="m"
+                autoComplete="off"
+                placeholder="Type your message..."
+                name="message"
+              />
+              <button type="submit">Send</button>
+              <button
+                onClick={handleDisconnect}
+                style={{
+                  marginLeft: "10px",
+                }}
+              >
+                Disconnect
+              </button>
+            </form>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

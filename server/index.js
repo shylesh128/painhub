@@ -22,10 +22,7 @@ const handle = app.getRequestHandler();
 
 const DB = process.env.DATABASE.replace("<PASSWORD>", process.env.PASSWORD);
 mongoose
-  .connect(DB, {
-    useNewUrlParser: true,
-    useUnifiedTopology: false,
-  })
+  .connect(DB)
   .then(() => {
     console.log("DB connection successful!");
   })

@@ -44,6 +44,9 @@ const userByToken = catchAsync(async (req, res, next) => {
   const token = authorizationHeader.split(" ")[1];
 
   try {
+    if (!token) {
+      throw new Error("Token is missing.");
+    }
     const decoded = jwt.verify(token, secretKey);
 
     const user = await User.findById(decoded.userId);
