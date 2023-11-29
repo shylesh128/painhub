@@ -39,6 +39,7 @@ app
     server.use(cors());
     server.use(bodyParser.json());
     server.use(cookieParser());
+    server.use(express.text());
 
     const io = socketModule(httpServer);
 

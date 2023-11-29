@@ -15,6 +15,8 @@ const {
   createFeedback,
 } = require("../controllers/feedbackController");
 const { getAllTweets, createTweet } = require("../controllers/tweetController");
+const { pythoncodeComplier } = require("../controllers/pythonController");
+const { javacodeCompiler } = require("../controllers/JavaController");
 
 router.get("/api/status", statusController.getStatus);
 
@@ -35,4 +37,6 @@ router.get("/api/tweet", getAllTweets);
 router.post("/api/tweet", createTweet);
 
 router.post("/api/isLoggedIn", userByToken);
+
+router.post("/api/python", pythoncodeComplier);
 module.exports = router;
