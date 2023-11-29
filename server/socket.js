@@ -33,6 +33,24 @@ module.exports = (httpServer) => {
 
     let userId = user.name;
     let socketId = socket.id;
+
+    if (isUserAlreadyConnected(userId)) {
+      console.log(
+        `User ${userId} is already connected. Disconnecting duplicate connection.`
+      );
+      socket.disconnect(true);
+      return;
+    }
+
+    // Check if the user is already in the activeUsers map
+    if (activeUsers.has(socketId)) {
+      console.log(
+        `User ${userId} is already connected. Disconnecting duplicate connection.`
+      );
+      socket.disconnect(true);
+      return;
+    }
+
     if (
       activePairs.length === 0 ||
       activePairs[activePairs.length - 1].length === 2
@@ -47,16 +65,37 @@ module.exports = (httpServer) => {
     socket.on("get active users", (callback) => {
       callback(Array.from(activeUsers.values()));
     });
+
     activeUsers.set(socketId, userId);
     console.log(`${userId} connected to chat in pair ${activePairs.length}`);
     io.of("/api/chat").emit("update users", Array.from(activeUsers.values()));
+
     socket.on("disconnect", () => {
       console.log(`${userId} disconnected from chat`);
-      activeUsers.delete(socketId);
-      currentPair.splice(currentPair.indexOf(socketId), 1);
+
+      // Check if the user is in the activeUsers map before deleting
+      if (activeUsers.has(socketId)) {
+        activeUsers.delete(socketId);
+      }
+
+      // Remove the user from the current pair
+      const index = currentPair.indexOf(socketId);
+      if (index !== -1) {
+        currentPair.splice(index, 1);
+      }
+
       marvelCharacters.push(userId);
       io.of("/api/chat").emit("update users", Array.from(activeUsers.values()));
     });
+
+    function isUserAlreadyConnected(username) {
+      for (const [existingSocketId, existingUsername] of activeUsers) {
+        if (existingUsername === username) {
+          return true;
+        }
+      }
+      return false;
+    }
 
     socket.on("chat message", async (data) => {
       const timestamp = new Date().toISOString();
