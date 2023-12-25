@@ -8,12 +8,6 @@ export const Layout = ({ children }) => {
   const { user, logout, loading } = useContext(UserContext);
   const router = useRouter();
 
-  useEffect(() => {
-    if (!user && !loading) {
-      router.push("/login");
-    }
-  }, [user, loading]);
-
   if (loading)
     return (
       <div className="loadingScreen">

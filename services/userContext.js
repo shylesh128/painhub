@@ -27,10 +27,8 @@ export const UserProvider = ({ children }) => {
       );
       if (response.status === 200) {
         setUser(response.data.user);
-        router.push("/");
         setLoading(false);
       } else {
-        router.push("/login");
         setLoading(false);
       }
     } catch (error) {
@@ -58,6 +56,16 @@ export const UserProvider = ({ children }) => {
     }
   };
 
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get("/api/users");
+      console.log(response.data.data.users);
+      return response.data.data.users;
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
+
   useEffect(() => {
     isLoggedIn();
   }, []);
@@ -73,6 +81,7 @@ export const UserProvider = ({ children }) => {
     login,
     logout,
     loading,
+    fetchUsers,
   };
 
   return (

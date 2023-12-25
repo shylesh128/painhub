@@ -7,30 +7,6 @@ const jwt = require("jsonwebtoken");
 const secretKey =
   "746d3de964867c223d8a97948f22987e66566d7b73e65f0b23221ac8174b986e";
 
-const login = catchAsync(async (req, res, next) => {
-  const email = req.body.email;
-
-  const user = await User.findOne({ email });
-
-  if (!user) {
-    return res.status(400).json({
-      status: "fail",
-      message: "User not found.",
-    });
-  }
-
-  const token = jwt.sign({ userId: user._id }, secretKey, {
-    expiresIn: "9999999d",
-  });
-
-  res.status(200).json({
-    status: "success",
-    message: "User login successfully.",
-    token: token,
-    user: user,
-  });
-});
-
 const deleteUser = catchAsync(async (req, res, next) => {
   const userId = req.params.id;
 
