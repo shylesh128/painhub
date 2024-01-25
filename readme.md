@@ -62,3 +62,8 @@ PASSWORD=<your_generated_password>
 DATABASE=mongodb+srv://username:<PASSWORD>@clustername.mo0ihyi.mongodb.net/?retryWrites=true&w=majority
 
 ```
+
+0A14C853288078F89CCBD40C6EFC4EE431D6
+shyleshprof@gmail.com
+smtp.elasticemail.com
+2525

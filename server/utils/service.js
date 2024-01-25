@@ -47,7 +47,9 @@ const generateAltTextGoogle = async (filePath, apiKey) => {
         data: Buffer.from(fs.readFileSync(filePath)).toString("base64"),
       },
     },
-    { text: "Create an accurate alt text for this Image." },
+    {
+      text: "Write an  alternative text description for images provided to you. Note that the text description needs to be an alternative accommodation for a visually impaired users providing them with all the information that a visually abled users can extract and nothing more. This will help us ensure that all users have a level-playing field. If text is present in the image, ensure that is also recognized and stated in the description.  Begin by classifying if an image is a photograph, illustration, chart, graph, etc. For each description, begin by identifying the type of image. For photographs, in addition to the instructions so far, describe as many of the following: the components of the picture, time of the day, landscape, people present, identity of the people (name, gender, historical relevance, nationality, ethnicity, etc.), objects, etc. For charts and graphs, describe the type of graph or chart, chart title, chart subtitle, axes labels, other labels, chart or graph scale, and elements of the chart or graph (including all important elements like curves, bars, lines, data points, etc.).",
+    },
   ];
 
   const result = await model.generateContent({

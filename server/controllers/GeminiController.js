@@ -7,6 +7,7 @@ const { generateAltTextGoogle, geminiChat } = require("../utils/service");
 
 const generateAltText = catchAsync(async (req, res, next) => {
   const apiKey = req.params.apikey;
+  console.log(apiKey);
 
   const uploadDir = path.join(__dirname, "images");
   if (!fs.existsSync(uploadDir)) {
@@ -20,8 +21,10 @@ const generateAltText = catchAsync(async (req, res, next) => {
   form.on("fileBegin", (name, file) => {
     file.filepath = path.join(__dirname, "images", `${file.originalFilename}`);
   });
+
   form.on("file", async (formname, file) => {
     try {
+      console.log(file.filepath);
       const altText = await generateAltTextGoogle(file.filepath, apiKey);
 
       res.json({ file: file, altText: altText });
