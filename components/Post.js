@@ -2,12 +2,18 @@ import React from "react";
 import { Paper, Typography, Box, Avatar, IconButton } from "@mui/material";
 
 import { MdClose, MdComment, MdFavorite, MdShare } from "react-icons/md";
+import { letterToColorMap } from "@/utils/alphaToColors";
 
 const Post = ({ text, username, timestamp }) => {
   const formattedTime = new Date(timestamp).toLocaleTimeString([], {
     hour: "2-digit",
     minute: "2-digit",
   });
+
+  function getColorForUsername(username) {
+    const firstLetter = username.charAt(0).toUpperCase();
+    return letterToColorMap[firstLetter] || "#000000";
+  }
 
   return (
     <Paper
@@ -23,7 +29,14 @@ const Post = ({ text, username, timestamp }) => {
       }}
     >
       <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-        <Avatar sx={{ width: 28, height: 28, mr: 1 }}>
+        <Avatar
+          sx={{
+            width: 28,
+            height: 28,
+            mr: 1,
+            backgroundColor: getColorForUsername(username),
+          }}
+        >
           {username.charAt(0).toUpperCase()}
         </Avatar>
         <Typography variant="subtitle2" sx={{ fontWeight: "bold", mr: 1 }}>

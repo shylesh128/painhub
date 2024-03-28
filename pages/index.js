@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import {
   Box,
   TextField,
@@ -17,10 +17,12 @@ import { UserContext } from "@/services/userContext";
 const Home = () => {
   const { user } = useContext(UserContext);
   const router = useRouter();
-  const [posts, setPosts] = useState([]);
+  const [page, setPage] = useState(1);
+  const [tweets, setTweets] = useState([]);
   const [email, setEmail] = useState(null);
   const [newPost, setNewPost] = useState("");
   const [loading, setLoading] = useState(false);
+  const chatContainerRef = useRef(null);
 
   useEffect(() => {
     if (user) {
@@ -29,11 +31,11 @@ const Home = () => {
       const fetchTweets = async () => {
         try {
           setLoading(true);
-          const response = await fetch("/api/tweet");
+          const response = await fetch(`/api/tweet?page=${page}`);
 
           if (response.ok) {
             const data = await response.json();
-            setPosts(data.data.tweets);
+            setTweets([...tweets, ...data.data.tweets]);
             setLoading(false);
           } else {
             console.error("Failed to fetch tweets");
@@ -45,7 +47,7 @@ const Home = () => {
 
       fetchTweets();
     }
-  }, [user]);
+  }, [user, page]);
 
   const addPost = async () => {
     if (newPost.trim() !== "") {
@@ -66,7 +68,7 @@ const Home = () => {
 
         if (response.ok) {
           const data = await response.json();
-          setPosts([...posts, data.data.tweet]);
+          setTweets([data.data.tweet, ...tweets]);
           setNewPost("");
         } else {
           // Handle error
@@ -77,6 +79,21 @@ const Home = () => {
       }
     }
   };
+
+  const loadMore = () => {
+    setPage(page + 1);
+  };
+
+  const scrollToBottom = () => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop =
+        chatContainerRef.current.scrollHeight;
+    }
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [tweets]);
 
   return (
     <>
@@ -89,8 +106,8 @@ const Home = () => {
           padding: "20px",
           maxWidth: "600px",
           margin: "auto",
-          height: "80vh",
         }}
+        ref={chatContainerRef}
       >
         <Box
           sx={{
@@ -115,15 +132,20 @@ const Home = () => {
               Loading...
             </Typography>
           ) : (
-            posts.map((post, index) => (
-              <Post
-                key={index}
-                text={post.tweet}
-                username={post.name}
-                timestamp={post.timeStamp}
-              />
-            ))
+            <div>
+              {tweets.map((tweet, index) => (
+                <Post
+                  key={index}
+                  text={tweet.tweet}
+                  username={tweet.name}
+                  timestamp={tweet.timeStamp}
+                />
+              ))}
+            </div>
           )}
+          <Box>
+            <Button onClick={loadMore}>Load More</Button>
+          </Box>
         </Box>
 
         <AppBar
