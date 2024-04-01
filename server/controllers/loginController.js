@@ -58,7 +58,6 @@ const userByToken = catchAsync(async (req, res, next) => {
     });
   } catch (error) {
     // Handle token verification errors
-    console.error("Token verification failed:", error);
     res.status(401).json({
       status: "fail",
       message: "Token verification failed.",

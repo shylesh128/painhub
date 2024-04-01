@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import { UserContext } from "@/services/userContext";
 import { useRouter } from "next/router";
-import { MdChat } from "react-icons/md";
+import { MdChat, MdEdit } from "react-icons/md";
 
 const TopAppBar = () => {
   const { user, logout } = useContext(UserContext);
@@ -53,6 +53,15 @@ const TopAppBar = () => {
               }}
             >
               <MdChat color="#ffa31a" />
+            </IconButton>
+          </Box>
+          <Box>
+            <IconButton
+              onClick={() => {
+                router.push("/tweet");
+              }}
+            >
+              <MdEdit color="#ffa31a" />
             </IconButton>
           </Box>
           <Box>
