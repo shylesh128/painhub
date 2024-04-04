@@ -46,25 +46,23 @@ const TopAppBar = () => {
           />
           <Box sx={{ flexGrow: 1 }}></Box>
 
-          <Box>
-            <IconButton
-              onClick={() => {
-                router.push("/chat");
-              }}
-            >
-              <MdChat color="#ffa31a" />
-            </IconButton>
-          </Box>
-          <Box>
-            <IconButton
-              onClick={() => {
-                router.push("/tweet");
-              }}
-            >
-              <MdEdit color="#ffa31a" />
-            </IconButton>
-          </Box>
-          <Box>
+          <IconButton
+            onClick={() => {
+              router.push("/chat");
+            }}
+          >
+            <MdChat color="#ffa31a" />
+          </IconButton>
+
+          <IconButton
+            onClick={() => {
+              router.push("/tweet");
+            }}
+          >
+            <MdEdit color="#ffa31a" />
+          </IconButton>
+
+          {/* <Box>
             <IconButton onClick={handleAvatarClick}>
               <Avatar
                 src=""
@@ -84,7 +82,7 @@ const TopAppBar = () => {
             >
               <MenuItem onClick={logout}>Logout</MenuItem>
             </Menu>
-          </Box>
+          </Box> */}
         </Toolbar>
       </AppBar>
     </Box>

@@ -19,12 +19,12 @@ const Post = ({ text, username, timestamp }) => {
     <Paper
       elevation={3}
       sx={{
-        p: 2, // reduce padding
-        marginBottom: 2, // reduce margin
+        p: 2,
+        marginBottom: 2,
         width: "100%",
         backgroundColor: "#1c1c1c",
         color: "#ffffff",
-        borderRadius: "8px", // reduce border radius
+        borderRadius: "8px",
         border: "1px solid #bdbdbd",
       }}
     >
@@ -39,7 +39,10 @@ const Post = ({ text, username, timestamp }) => {
         >
           {username.charAt(0).toUpperCase()}
         </Avatar>
-        <Typography variant="subtitle2" sx={{ fontWeight: "bold", mr: 1 }}>
+        <Typography
+          variant="subtitle2"
+          sx={{ fontWeight: "bold", mr: 1, color: "grey" }}
+        >
           {username}
         </Typography>
         <Box sx={{ flexGrow: 1 }} />
@@ -47,48 +50,9 @@ const Post = ({ text, username, timestamp }) => {
           {formattedTime}
         </Typography>
       </Box>
-      <Typography sx={{ mb: 1, fontSize: "0.9rem" }}>{text}</Typography>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <Box sx={{ display: "flex", alignItems: "center" }}>
-          <IconButton
-            size="small"
-            sx={{ color: "#bdbdbd", "&:hover": { color: "#ffffff" } }}
-          >
-            <MdFavorite />
-          </IconButton>
-          <Typography variant="caption" sx={{ color: "#bdbdbd", ml: 0.5 }}>
-            42
-          </Typography>
-        </Box>
-        <Box sx={{ display: "flex", alignItems: "center" }}>
-          <IconButton
-            size="small"
-            sx={{ color: "#bdbdbd", "&:hover": { color: "#ffffff" } }}
-          >
-            <MdComment />
-          </IconButton>
-          <Typography variant="caption" sx={{ color: "#bdbdbd", ml: 0.5 }}>
-            18
-          </Typography>
-        </Box>
-        <Box sx={{ display: "flex", alignItems: "center" }}>
-          <IconButton
-            size="small"
-            sx={{ color: "#bdbdbd", "&:hover": { color: "#ffffff" } }}
-          >
-            <MdShare />
-          </IconButton>
-          <Typography variant="caption" sx={{ color: "#bdbdbd", ml: 0.5 }}>
-            Share
-          </Typography>
-        </Box>
-      </Box>
+      <Typography sx={{ mb: 1, fontSize: "0.9rem", color: "grey" }}>
+        {text}
+      </Typography>
     </Paper>
   );
 };
