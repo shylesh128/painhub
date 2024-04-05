@@ -29,7 +29,7 @@ const Post = ({ text, username, timestamp }) => {
       }}
     >
       <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-        <Avatar
+        {/* <Avatar
           sx={{
             width: 28,
             height: 28,
@@ -38,12 +38,17 @@ const Post = ({ text, username, timestamp }) => {
           }}
         >
           {username.charAt(0).toUpperCase()}
-        </Avatar>
+        </Avatar> */}
         <Typography
           variant="subtitle2"
-          sx={{ fontWeight: "bold", mr: 1, color: "grey" }}
+          sx={{
+            fontWeight: "bold",
+            mr: 1,
+            color: getColorForUsername(username),
+            textTransform: "lowercase",
+          }}
         >
-          {username}
+          @{username}
         </Typography>
         <Box sx={{ flexGrow: 1 }} />
         <Typography variant="caption" sx={{ color: "#bdbdbd" }}>

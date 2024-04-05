@@ -9,19 +9,18 @@ export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(undefined);
   const [loading, setLoading] = useState(false);
   const [cookies, setCookie, removeCookie] = useCookies(["user"]);
+  const [token, setToken] = useState(cookies.pain);
   const router = useRouter();
 
   const isLoggedIn = async () => {
     setLoading(true);
-    const storedToken = cookies.pain;
-    console.log(storedToken);
     try {
       const response = await axios.post(
         "/api/isLoggedIn",
         {},
         {
           headers: {
-            Authorization: `Bearer ${storedToken}`,
+            Authorization: `Bearer ${token}`,
           },
         }
       );
@@ -45,9 +44,9 @@ export const UserProvider = ({ children }) => {
           email: email,
         });
         if (response.status === 200) {
-          console.log(response.data);
           setUser(response.data.user);
           setCookie("pain", response.data.token);
+          setToken(response.data.token);
           router.push("/");
         }
       } catch (error) {
@@ -59,7 +58,6 @@ export const UserProvider = ({ children }) => {
   const fetchUsers = async () => {
     try {
       const response = await axios.get("/api/users");
-      console.log(response.data.data.users);
       return response.data.data.users;
     } catch (error) {
       console.error("Error fetching users:", error);
@@ -72,8 +70,40 @@ export const UserProvider = ({ children }) => {
 
   const logout = () => {
     setUser(null);
+    setToken(null);
     removeCookie("pain");
     router.push("/login");
+  };
+
+  const fetchTweets = async (page) => {
+    try {
+      const response = await axios.get(`/api/tweet?page=${page}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = response.data;
+      return [...data.data.tweets];
+    } catch (error) {
+      console.error("Error fetching tweets:", error);
+    }
+  };
+
+  const addPost = async (newPostObject) => {
+    try {
+      const response = await axios.post("/api/tweet", newPostObject, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = response.data;
+      return data.data.tweet;
+    } catch (error) {
+      console.error("Error creating tweet:", error);
+    }
   };
 
   const contextValue = {
@@ -82,6 +112,8 @@ export const UserProvider = ({ children }) => {
     logout,
     loading,
     fetchUsers,
+    fetchTweets,
+    addPost,
   };
 
   return (

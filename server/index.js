@@ -2,7 +2,6 @@
 const express = require("express");
 const next = require("next");
 const http = require("http");
-const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
@@ -12,23 +11,15 @@ require("dotenv").config();
 const AppError = require("./utils/appError");
 const globalErrorHandler = require("./controllers/errorController");
 const routes = require("./routes/statusRoutes");
-const Message = require("./models/messageModel");
 
 const socketModule = require("./socket");
+const { mongoConnect } = require("./utils/service");
 const PORT = process.env.PORT;
 const dev = process.env.NODE_ENV !== "production";
 const app = next({ dev });
 const handle = app.getRequestHandler();
 
-const DB = process.env.DATABASE.replace("<PASSWORD>", process.env.PASSWORD);
-mongoose
-  .connect(DB)
-  .then(() => {
-    console.log("DB connection successful!");
-  })
-  .catch((err) => {
-    console.log(err);
-  });
+mongoConnect();
 
 app
   .prepare()

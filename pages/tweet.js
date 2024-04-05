@@ -14,7 +14,7 @@ import { MdSend } from "react-icons/md";
 import { UserContext } from "@/services/userContext";
 
 const Tweet = () => {
-  const { user } = useContext(UserContext);
+  const { user, fetchTweets, addPost } = useContext(UserContext);
   const router = useRouter();
   const [page, setPage] = useState(1);
   const [tweets, setTweets] = useState([]);
@@ -23,32 +23,12 @@ const Tweet = () => {
   const [loading, setLoading] = useState(false);
   const chatContainerRef = useRef(null);
 
-  useEffect(() => {
-    if (user) {
-      setEmail(user.email);
+  const fetchNewTweets = async () => {
+    const res = await fetchTweets(page);
+    setTweets([...tweets, ...res]);
+  };
 
-      const fetchTweets = async () => {
-        try {
-          setLoading(true);
-          const response = await fetch(`/api/tweet?page=${page}`);
-
-          if (response.ok) {
-            const data = await response.json();
-            setTweets([...tweets, ...data.data.tweets]);
-            setLoading(false);
-          } else {
-            console.error("Failed to fetch tweets");
-          }
-        } catch (error) {
-          console.error("Error fetching tweets:", error);
-        }
-      };
-
-      fetchTweets();
-    }
-  }, [user, page]);
-
-  const addPost = async () => {
+  const addNewTweet = async () => {
     if (newPost.trim() !== "") {
       const newPostObject = {
         tweet: newPost,
@@ -57,22 +37,9 @@ const Tweet = () => {
       };
 
       try {
-        const response = await fetch("/api/tweet", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(newPostObject),
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          setTweets([data.data.tweet, ...tweets]);
-          setNewPost("");
-        } else {
-          // Handle error
-          console.error("Failed to create tweet");
-        }
+        const response = await addPost(newPostObject);
+        setTweets([response, ...tweets]);
+        setNewPost("");
       } catch (error) {
         console.error("Error creating tweet:", error);
       }
@@ -89,6 +56,13 @@ const Tweet = () => {
         chatContainerRef.current.scrollHeight;
     }
   };
+
+  useEffect(() => {
+    if (user) {
+      setEmail(user.email);
+      fetchNewTweets();
+    }
+  }, [user, page]);
 
   useEffect(() => {
     scrollToBottom();
@@ -214,7 +188,7 @@ const Tweet = () => {
                   placeItems: "center",
                 }}
               >
-                <IconButton variant="contained" onClick={addPost}>
+                <IconButton variant="contained" onClick={addNewTweet}>
                   <MdSend color="#fff" size={30} />
                 </IconButton>
               </div>

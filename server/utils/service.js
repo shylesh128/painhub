@@ -4,6 +4,7 @@ const {
   HarmBlockThreshold,
 } = require("@google/generative-ai");
 const fs = require("fs");
+const mongoose = require("mongoose");
 
 const generateAltTextGoogle = async (filePath, apiKey) => {
   const MODEL_NAME = "gemini-pro-vision";
@@ -105,9 +106,22 @@ const geminiChat = async (apiKey, promp) => {
   return response.text();
 };
 
+function mongoConnect() {
+  const DB = process.env.DATABASE.replace("<PASSWORD>", process.env.PASSWORD);
+  mongoose
+    .connect(DB)
+    .then(() => {
+      console.log("DB connection successful!");
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
+
 module.exports = {
   generateAltTextGoogle,
   geminiChat,
+  mongoConnect,
 };
 
 // // Example usage:

@@ -27,6 +27,10 @@ export const Layout = ({ children }) => {
       </div>
     );
 
+  if (!!user && router.pathname === "/login") {
+    router.push("/");
+  }
+
   if (!user && !loading) return <div>{children}</div>;
   if (user) {
     return (
