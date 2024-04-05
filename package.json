@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "NODE_ENV=development PORT=3001 nodemon server/index.js",
     "build": "next build",
-    "start": "NODE_ENV=production node server/index.js",
+    "start": "NODE_ENV=production PORT=3001 node server/index.js",
     "stage": "NODE_ENV=production PORT=4000 node server/index.js",
     "prod:dev": "NODE_ENV=production PORT=4001 node server/index.js",
     "lint": "next lint"
