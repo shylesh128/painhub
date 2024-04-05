@@ -4,79 +4,57 @@ import {
   TextField,
   Button,
   Typography,
-  IconButton,
-  AppBar,
-  Toolbar,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import Post from "@/components/Post";
-import { useRouter } from "next/router";
-import { MdSend } from "react-icons/md";
 import { UserContext } from "@/services/userContext";
 
 const Tweet = () => {
-  const { user } = useContext(UserContext);
-  const router = useRouter();
+  const { user, fetchTweets, addPost } = useContext(UserContext);
+
   const [page, setPage] = useState(1);
   const [tweets, setTweets] = useState([]);
-  const [email, setEmail] = useState(null);
   const [newPost, setNewPost] = useState("");
   const [loading, setLoading] = useState(false);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
   const chatContainerRef = useRef(null);
 
-  useEffect(() => {
-    if (user) {
-      setEmail(user.email);
+  const fetchNewTweets = async () => {
+    const res = await fetchTweets(page);
+    setTweets([...tweets, ...res]);
+  };
 
-      const fetchTweets = async () => {
-        try {
-          setLoading(true);
-          const response = await fetch(`/api/tweet?page=${page}`);
-
-          if (response.ok) {
-            const data = await response.json();
-            setTweets([...tweets, ...data.data.tweets]);
-            setLoading(false);
-          } else {
-            console.error("Failed to fetch tweets");
-          }
-        } catch (error) {
-          console.error("Error fetching tweets:", error);
-        }
-      };
-
-      fetchTweets();
-    }
-  }, [user, page]);
-
-  const addPost = async () => {
+  const addNewTweet = async () => {
     if (newPost.trim() !== "") {
+      if (newPost.length < 10) {
+        // Minimum character count validation (e.g., 10 characters)
+        setOpenSnackbar(true);
+        return; // Prevent further execution
+      }
+
       const newPostObject = {
         tweet: newPost,
         name: user.name,
-        email: email,
+        email: user.email,
       };
 
       try {
-        const response = await fetch("/api/tweet", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(newPostObject),
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          setTweets([data.data.tweet, ...tweets]);
-          setNewPost("");
-        } else {
-          // Handle error
-          console.error("Failed to create tweet");
-        }
+        const response = await addPost(newPostObject);
+        setTweets([response, ...tweets]);
+        setNewPost("");
       } catch (error) {
         console.error("Error creating tweet:", error);
       }
     }
+  };
+
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpenSnackbar(false);
   };
 
   const loadMore = () => {
@@ -91,11 +69,28 @@ const Tweet = () => {
   };
 
   useEffect(() => {
+    fetchNewTweets();
+  }, [page]);
+
+  useEffect(() => {
     scrollToBottom();
   }, [tweets]);
 
   return (
     <>
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity="warning"
+          sx={{ width: "100%" }}
+        >
+          Please enter at least 10 characters for your tweet.
+        </Alert>
+      </Snackbar>
       <Box
         sx={{
           display: "flex",
@@ -111,7 +106,6 @@ const Tweet = () => {
           sx={{
             width: "100%",
             marginBottom: "20px",
-            marginTop: "2rem",
             padding: "2rem 0",
             overflow: "auto",
           }}
@@ -141,86 +135,60 @@ const Tweet = () => {
               ))}
             </div>
           )}
-          <Box>
-            <Button onClick={loadMore}>Load More</Button>
+
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              width: "100%",
+            }}
+          >
+            <Button onClick={loadMore} sx={{ width: "250px" }}>
+              Load More
+            </Button>
           </Box>
         </Box>
-
-        <AppBar
-          position="fixed"
-          color="primary"
+        <Box
           sx={{
-            backgroundColor: "black",
-            width: "100%",
-            top: "auto",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            position: "fixed",
             bottom: 0,
+            width: "100%",
+            padding: "1rem",
           }}
         >
-          <Toolbar>
-            <Box
-              sx={{
-                display: {
-                  xs: "none",
-                  sm: "block",
-                },
-              }}
-            >
-              <img
-                src="/images/main.jpg"
-                alt="pain hub logo"
-                style={{
-                  height: "50px",
-                }}
-              />
-            </Box>
+          <TextField
+            fullWidth
+            placeholder="What's happening?"
+            variant="outlined"
+            value={newPost}
+            onChange={(e) => setNewPost(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                addNewTweet();
+              }
+            }}
+            sx={{
+              color: "white",
+              background: "#333",
 
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                width: "100%",
-              }}
-            >
-              <div style={{ width: "90%", padding: "10px" }}>
-                <TextField
-                  fullWidth
-                  placeholder="What's happening?"
-                  variant="outlined"
-                  value={newPost}
-                  onChange={(e) => setNewPost(e.target.value)}
-                  sx={{
-                    color: "white",
-                    background: "#333",
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#555",
-                    },
-                    "&:hover .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#555",
-                    },
-                  }}
-                  InputProps={{
-                    style: {
-                      color: "white",
-                      placeholder: "white",
-                    },
-                  }}
-                />
-              </div>
-              <div
-                style={{
-                  width: "10%",
-                  display: "grid",
-                  placeItems: "center",
-                }}
-              >
-                <IconButton variant="contained" onClick={addPost}>
-                  <MdSend color="#fff" size={30} />
-                </IconButton>
-              </div>
-            </Box>
-          </Toolbar>
-        </AppBar>
+              "& .MuiOutlinedInput-notchedOutline": {
+                borderColor: "#555",
+              },
+              "&:hover .MuiOutlinedInput-notchedOutline": {
+                borderColor: "#555",
+              },
+            }}
+            InputProps={{
+              style: {
+                color: "white",
+                placeholder: "white",
+              },
+            }}
+          />
+        </Box>
       </Box>
     </>
   );

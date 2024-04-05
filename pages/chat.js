@@ -1,5 +1,6 @@
+import MessageBubble from "@/components/MessageBubble";
 import { UserContext } from "@/services/userContext";
-import { Typography } from "@mui/material";
+import { Typography, Container, Grid } from "@mui/material";
 import { useState, useEffect, useRef, useContext } from "react";
 import io from "socket.io-client";
 
@@ -93,6 +94,7 @@ export default function Chat() {
     return date.toLocaleTimeString([], {
       hour: "2-digit",
       minute: "2-digit",
+      hour12: true, // Add this option to include AM/PM
     });
   };
 
@@ -104,7 +106,7 @@ export default function Chat() {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            height: "80vh",
+            height: "90vh",
           }}
         >
           <div>
@@ -113,8 +115,16 @@ export default function Chat() {
           </div>
         </div>
       ) : (
-        <div id="main-content">
+        <Grid container>
           <div id="side-app">
+            <button
+              onClick={handleDisconnect}
+              style={{
+                marginLeft: "10px",
+              }}
+            >
+              Disconnect
+            </button>
             <h2 style={headingStyle}>Active Users</h2>
             <ul>
               {activeUsers.map((user, index) => (
@@ -153,13 +163,16 @@ export default function Chat() {
                   }
                 >
                   <div className="message-container">
-                    <div className="message-wrapper">
-                      <span className="username">{message.userId}</span>
-                      <span className="timeStamp">
-                        {formatTimestamp(message.timestamp)}
-                      </span>
-                    </div>
-                    <div className="message-bubble">{message.msg}</div>
+                    {message.userId !== user.name && (
+                      <div className="message-wrapper">
+                        <span className="username">{message.userId}</span>
+                      </div>
+                    )}
+                    <MessageBubble
+                      sender={message.userId === user.name}
+                      message={message.msg}
+                      timestamp={formatTimestamp(message.timestamp)}
+                    />
                   </div>
                 </li>
               ))}
@@ -172,18 +185,9 @@ export default function Chat() {
                 placeholder="Type your message..."
                 name="message"
               />
-              <button type="submit">Send</button>
-              <button
-                onClick={handleDisconnect}
-                style={{
-                  marginLeft: "10px",
-                }}
-              >
-                Disconnect
-              </button>
             </form>
           </div>
-        </div>
+        </Grid>
       )}
     </div>
   );

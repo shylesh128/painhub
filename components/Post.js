@@ -1,7 +1,6 @@
 import React from "react";
-import { Paper, Typography, Box, Avatar, IconButton } from "@mui/material";
+import { Paper, Typography, Box } from "@mui/material";
 
-import { MdClose, MdComment, MdFavorite, MdShare } from "react-icons/md";
 import { letterToColorMap } from "@/utils/alphaToColors";
 
 const Post = ({ text, username, timestamp }) => {
@@ -29,33 +28,24 @@ const Post = ({ text, username, timestamp }) => {
       }}
     >
       <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-        {/* <Avatar
-          sx={{
-            width: 28,
-            height: 28,
-            mr: 1,
-            backgroundColor: getColorForUsername(username),
-          }}
-        >
-          {username.charAt(0).toUpperCase()}
-        </Avatar> */}
         <Typography
           variant="subtitle2"
           sx={{
             fontWeight: "bold",
             mr: 1,
             color: getColorForUsername(username),
+            opacity: 0.5,
             textTransform: "lowercase",
           }}
         >
           @{username}
         </Typography>
         <Box sx={{ flexGrow: 1 }} />
-        <Typography variant="caption" sx={{ color: "#bdbdbd" }}>
+        <Typography variant="caption" sx={{ color: "#ffa31a" }}>
           {formattedTime}
         </Typography>
       </Box>
-      <Typography sx={{ mb: 1, fontSize: "0.9rem", color: "grey" }}>
+      <Typography sx={{ mb: 1, fontSize: "1rem", color: "#fff", opacity: 0.8 }}>
         {text}
       </Typography>
     </Paper>

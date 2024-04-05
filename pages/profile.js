@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import { Box, TextField, Button, Typography } from "@mui/material";
 import Post from "@/components/Post";
-import { useRouter } from "next/router";
 import { UserContext } from "@/services/userContext";
 
 const Tweet = () => {

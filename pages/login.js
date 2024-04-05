@@ -3,7 +3,7 @@ import { Box, Button, Typography, TextField } from "@mui/material";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useState, useContext } from "react";
-
+import { TypeAnimation } from "react-type-animation";
 const Login = () => {
   const router = useRouter();
   const { login } = useContext(UserContext);
@@ -60,6 +60,12 @@ const Login = () => {
             mixBlendMode: "lighten",
           }}
         ></Box>
+
+        <TypeAnimation
+          sequence={["Welcome", 1500, "Write your pain", 1500]}
+          speed={40}
+          style={{ fontSize: "2em" }}
+        />
 
         <TextField
           type="email"
