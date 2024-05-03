@@ -8,7 +8,8 @@
     "start": "NODE_ENV=production node server/index.js",
     "stage": "NODE_ENV=production PORT=4000 node server/index.js",
     "prod:dev": "NODE_ENV=production PORT=4001 node server/index.js",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "mocha"
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",
@@ -33,7 +34,8 @@
     "react-icons": "^4.12.0",
     "react-type-animation": "^3.2.0",
     "socket.io": "^4.7.2",
-    "socket.io-client": "^4.7.2"
+    "socket.io-client": "^4.7.2",
+    "validator": "^13.11.0"
   },
   "engines": {
     "node": ">=14.20.1"

@@ -102,6 +102,7 @@ body {
 }
 
 #messages {
+  width: 100%;
   list-style-type: none;
   margin: 0;
   padding: 10px;
@@ -135,7 +136,7 @@ body {
 #form {
   display: flex;
   align-items: center;
-  padding: 12px;
+  padding: 12px 0px;
   background-color: var(--background-color);
 }
 

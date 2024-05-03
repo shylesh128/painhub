@@ -4,8 +4,7 @@ const appError = require("../utils/appError");
 
 const jwt = require("jsonwebtoken");
 
-const secretKey =
-  "746d3de964867c223d8a97948f22987e66566d7b73e65f0b23221ac8174b986e";
+const secretKey = process.env.SECRET_KEY;
 
 const deleteUser = catchAsync(async (req, res, next) => {
   const userId = req.params.id;
@@ -159,6 +158,15 @@ const deleteAllUsers = catchAsync(async (req, res, next) => {
   });
 });
 
+const getAllUser = catchAsync(async (req, res, next) => {
+  // Specify which fields to exclude in the projection
+  const users = await User.find({}, { email: 0, createdAt: 0 });
+
+  res.status(200).json({
+    users,
+  });
+});
+
 module.exports = {
   addUser,
   deleteUser,
@@ -166,4 +174,5 @@ module.exports = {
   editUser,
   addUsers,
   deleteAllUsers,
+  getAllUser,
 };

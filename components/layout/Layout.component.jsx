@@ -23,6 +23,8 @@ export const Layout = ({ children }) => {
   const [open, setOpen] = useState(false);
   const [pageLoading, setPageLoading] = useState(false);
 
+  console.log("user: ", user);
+
   const handleRouteChange = () => {
     setPageLoading(true);
   };
@@ -89,7 +91,7 @@ export const Layout = ({ children }) => {
       <div id="main">
         {user ? (
           <>
-            <div className="rightContainer" style={{ marginTop: "4rem" }}>
+            <div className="rightContainer">
               <TopAppBar />
 
               {children}

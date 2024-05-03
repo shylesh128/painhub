@@ -1,5 +1,4 @@
-import React from "react";
-import { Paper, Typography, Box } from "@mui/material";
+import { Box, Paper, Typography } from "@mui/material";
 
 import { letterToColorMap } from "@/utils/alphaToColors";
 
@@ -34,7 +33,6 @@ const Post = ({ text, username, timestamp }) => {
             fontWeight: "bold",
             mr: 1,
             color: getColorForUsername(username),
-            opacity: 0.5,
             textTransform: "lowercase",
           }}
         >

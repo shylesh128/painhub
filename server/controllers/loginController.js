@@ -3,10 +3,7 @@ const User = require("../models/userModel");
 const appError = require("../utils/appError");
 
 const jwt = require("jsonwebtoken");
-
-const secretKey =
-  "746d3de964867c223d8a97948f22987e66566d7b73e65f0b23221ac8174b986e";
-
+const secretKey = process.env.SECRET_KEY;
 const login = catchAsync(async (req, res, next) => {
   const email = req.body.email;
 
@@ -20,7 +17,7 @@ const login = catchAsync(async (req, res, next) => {
   }
 
   const token = jwt.sign({ userId: user._id }, secretKey, {
-    expiresIn: "9999999d",
+    expiresIn: "365d",
   });
 
   res.status(200).json({

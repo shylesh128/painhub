@@ -1,6 +1,6 @@
 import MessageBubble from "@/components/MessageBubble";
 import { UserContext } from "@/services/userContext";
-import { Typography, Container, Grid } from "@mui/material";
+import { Typography, Container, TextField, Grid } from "@mui/material";
 import { useState, useEffect, useRef, useContext } from "react";
 import io from "socket.io-client";
 
@@ -116,7 +116,13 @@ export default function Chat() {
         </div>
       ) : (
         <Grid container>
-          <div id="side-app">
+          <div
+            id="side-app"
+            style={{
+              height: "90vh",
+              overflowY: "auto",
+            }}
+          >
             <button
               onClick={handleDisconnect}
               style={{
@@ -126,6 +132,7 @@ export default function Chat() {
               Disconnect
             </button>
             <h2 style={headingStyle}>Active Users</h2>
+
             <ul>
               {activeUsers.map((user, index) => (
                 <li key={index} style={listItemStyle}>
@@ -179,11 +186,31 @@ export default function Chat() {
             </ul>
 
             <form id="form" onSubmit={handleSubmit}>
-              <input
+              <TextField
                 id="m"
                 autoComplete="off"
                 placeholder="Type your message..."
                 name="message"
+                fullWidth
+                sx={{
+                  boxShadow: "0 0.125rem 0.25rem 0 #00000040",
+                  borderRadius: "6.25rem",
+                  marginTop: "0",
+
+                  "& .MuiOutlinedInput-root": {
+                    borderColor: "transparent",
+                    borderRadius: "6.25rem",
+                    "& fieldset": {
+                      borderColor: "transparent",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "transparent",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "transparent",
+                    },
+                  },
+                }}
               />
             </form>
           </div>

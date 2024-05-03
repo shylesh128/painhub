@@ -171,20 +171,23 @@ const Tweet = () => {
               }
             }}
             sx={{
-              color: "white",
-              background: "#333",
+              boxShadow: "0 0.125rem 0.25rem 0 #00000040",
+              borderRadius: "0.25rem",
+              marginTop: "0",
+              backgroundColor: "#292929",
 
-              "& .MuiOutlinedInput-notchedOutline": {
-                borderColor: "#555",
-              },
-              "&:hover .MuiOutlinedInput-notchedOutline": {
-                borderColor: "#555",
-              },
-            }}
-            InputProps={{
-              style: {
-                color: "white",
-                placeholder: "white",
+              "& .MuiOutlinedInput-root": {
+                borderColor: "transparent",
+                borderRadius: "6.25rem",
+                "& fieldset": {
+                  borderColor: "transparent",
+                },
+                "&:hover fieldset": {
+                  borderColor: "transparent",
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "transparent",
+                },
               },
             }}
           />

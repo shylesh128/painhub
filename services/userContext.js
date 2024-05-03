@@ -1,12 +1,13 @@
 import axios from "axios";
+import { useRouter } from "next/router";
 import { createContext, useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
-import { useRouter } from "next/router";
 
 export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
-  const [user, setUser] = useState(undefined);
+  const [user, setUser] = useState(null);
+  const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [cookies, setCookie, removeCookie] = useCookies(["user"]);
   const [token, setToken] = useState(cookies.pain);
@@ -14,6 +15,7 @@ export const UserProvider = ({ children }) => {
 
   const isLoggedIn = async () => {
     setLoading(true);
+
     try {
       const response = await axios.post(
         "/api/isLoggedIn",
@@ -45,6 +47,7 @@ export const UserProvider = ({ children }) => {
         });
         if (response.status === 200) {
           setUser(response.data.user);
+          console.log(response.data.user);
           setCookie("pain", response.data.token);
           setToken(response.data.token);
           router.push("/");
@@ -106,14 +109,92 @@ export const UserProvider = ({ children }) => {
     }
   };
 
+  const createNewPain = async (newPainObject) => {
+    try {
+      const response = await axios.post("/api/createPain", newPainObject, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = response.data;
+      console.log("data", data);
+    } catch (error) {
+      console.error("Error creating tweet:", error);
+    }
+  };
+
+  const getPains = async () => {
+    const response = await axios.get("/api/pain", {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    // console.log("response", response.data.data);
+    return response.data.data;
+  };
+
+  const addThreadMessage = async (threadMessageObject) => {
+    try {
+      const response = await axios.post("/api/thread", threadMessageObject, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      console.log("response:", response.data);
+    } catch (error) {
+      console.log("Error:", error);
+    }
+  };
+
+  const getUsers = async () => {
+    try {
+      const response = await axios.get("/api/users", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      // console.log("response", response.data.users);
+      setUsers(response.data.users);
+    } catch (e) {
+      console.log("error", e);
+    }
+  };
+
+  const getThreadsById = async (threadId) => {
+    try {
+      const response = await axios.get(`/api/thread/${threadId}`);
+      console.log("response:", response.data.data.threads);
+      return response.data.data.threads;
+    } catch (e) {
+      console.log("error", e);
+    }
+  };
+
+  useEffect(() => {
+    getUsers();
+  }, [token]);
+
   const contextValue = {
     user,
+    users,
     login,
     logout,
     loading,
     fetchUsers,
     fetchTweets,
     addPost,
+    createNewPain,
+    getPains,
+    addThreadMessage,
+    getThreadsById,
   };
 
   return (

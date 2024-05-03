@@ -8,6 +8,7 @@ const {
   editUser,
   addUsers,
   deleteAllUsers,
+  getAllUser,
 } = require("../controllers/userController");
 const { login, userByToken } = require("../controllers/loginController");
 const {
@@ -23,12 +24,17 @@ const {
   generateAltText,
   geminiAIChat,
 } = require("../controllers/GeminiController");
+const { createNewPain, getAllPains } = require("../controllers/painController");
+const authMiddleware = require("../middlewares/authmiddleware");
+const {
+  createThread,
+  getAllthreads,
+} = require("../controllers/threadController");
 
 router.get("/api/status", statusController.getStatus);
 
 router.post("/api/addUser", addUser);
 router.delete("/api/user/:id", deleteUser);
-router.get("/api/users", viewUser);
 router.put("/api/editUser/:id", editUser);
 
 router.post("/api/addUsers", addUsers);
@@ -49,5 +55,13 @@ router.post("/api/c", cCodeCompiler);
 
 router.post("/api/alttext/:apikey", generateAltText);
 router.post("/api/aichat/:apikey", geminiAIChat);
+
+router.post("/api/createPain", authMiddleware, createNewPain);
+router.get("/api/pain", authMiddleware, getAllPains);
+
+router.post("/api/thread", authMiddleware, createThread);
+router.get("/api/thread/:painId", getAllthreads);
+
+router.get("/api/users", authMiddleware, getAllUser);
 
 module.exports = router;
